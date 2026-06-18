@@ -27,7 +27,7 @@ window.showSuccessModal = function(title, message) {
 };
 
 // מעביר לזירת ההחלקות
-    window.redirectToHome = function() {
+    window.redirectToindex = function() {
     window.location.href = 'arena.html'; 
 };
 
