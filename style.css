@@ -1,0 +1,155 @@
+/* קובץ זה אחראי על עיצוב עמוד הבית, תפריט ועיצובים בסיסיים*/
+
+/* פלטת צבעים מרכזית */
+:root {
+    --rose: #B76E79;
+    --gold: #C68E58;
+    --pearl: #FAF9F6;
+    --dark-wine: #4A0E0E;
+}
+
+/* הגדרות כלליות לגוף העמוד */
+body {
+    background-color: var(--pearl);
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+}
+
+/* פונט לכותרות*/
+h1, h2, .brand-name {
+    font-family: 'Playfair Display', serif;
+}
+
+/* עיצוב סרגל הניווט (תפריט עליון) */
+.navbar {
+    background-color: var(--pearl) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(183, 110, 121, 0.2);
+}
+
+.brand-name {
+    color: var(--rose);
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    color: var(--rose) !important;
+    font-weight: 600;
+    transition: color 0.3s;
+    margin: 0 10px;
+}
+
+/* כשעוברים עם העכבר יהיה זהב */
+.nav-link:hover {
+    color: var(--gold) !important;
+}
+
+
+/* הדגשת העמוד הנוכחי בתפריט */
+.nav-link.active {
+    color: #888888 !important;
+    font-weight: 800;
+    border-bottom: 2px solid #888888;
+}
+
+/* עיצוב אזור משתמש */
+#userArea {
+    font-family: 'Open Sans', sans-serif;
+    color: var(--rose);
+}
+
+.btn-outline-gold {
+    color: var(--gold);
+    border-color: var(--gold);
+    border-radius: 20px;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--gold);
+    color: white;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 85vh;
+    padding: 100px 0 60px 0;
+}
+
+.hero-text h1 {
+    color: var(--dark-wine);
+}
+
+/* כפתור רוזה עם אפקט הגדלה במעבר עכבר */
+.btn-rose {
+    background-color: var(--rose);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.3s, opacity 0.3s;
+}
+
+.btn-rose:hover {
+    background-color: #a35d68;
+    color: white;
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* עיצוב חלון קופץ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+
+.custom-modal-content {
+    background: var(--pearl);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid var(--gold);
+    max-width: 350px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* אנימציית "לחיים" של כוסות יין */
+.cheers-animation {
+    font-size: 50px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.left-glass {
+    animation: toastLeft 1.5s infinite ease-in-out;
+}
+
+.right-glass {
+    animation: toastRight 1.5s infinite ease-in-out;
+    transform: scaleX(-1);
+}
+
+/* הגדרת תנועת האנימציה */
+@keyframes toastLeft {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(25deg) translateX(10px); }
+}
+
+@keyframes toastRight {
+    0%, 100% { transform: scaleX(-1) rotate(0deg); }
+    50% { transform: scaleX(-1) rotate(25deg) translateX(10px); }
+}

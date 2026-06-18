@@ -1,0 +1,324 @@
+/*משתני עיצוב מרכזיים של האתר */
+:root {
+    --primary-rose: #B76E79;
+    --accent-gold: #C68E58;
+    --bg-pearl: #FAF9F6;
+    --text-dark: #333333;
+    --text-light: #777777;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Open Sans', sans-serif;
+}
+
+/* איפוס בסיסי לכל האלמנטים */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* עיצוב כללי של העמוד */
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-pearl);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+h1, h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-rose);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 500px; 
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* אזור הלוגו והכותרת העליונה */
+.auth-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-header h1 {
+    font-size: 42px; 
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.auth-header p {
+    color: var(--accent-gold);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* כרטיס הטופס המרכזי */
+.auth-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* טאבים למעבר בין התחברות להרשמה */
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px 0;
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.3s, background 0.3s;
+}
+
+.tab-btn:hover {
+    background: #fdfbfb;
+}
+
+/* הטאב הפעיל מודגש בצבע הראשי */
+.tab-btn.active {
+    color: var(--primary-rose);
+    border-bottom: 3px solid var(--primary-rose);
+}
+
+/* טפסים */
+.form-section {
+    display: none; 
+    padding: 30px;
+}
+
+.form-section.active {
+    display: block; 
+    animation: slideUp 0.4s ease forwards;
+}
+
+.form-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-step {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eeeeee;
+}
+
+.form-step h3 {
+    font-size: 20px; 
+    color: var(--accent-gold);
+    margin-bottom: 15px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+/* שדות קלט */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* הדגשת שדה בזמן הקלדה */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-rose);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    accent-color: var(--primary-rose);
+    width: 16px;
+    height: 16px;
+}
+
+/* בועות בחירה להעדפות טעם */
+.question-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.bubble-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.bubble-group input {
+    display: none;
+}
+
+.bubble-label {
+    padding: 8px 16px;
+    border: 2px solid #eeeeee;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+}
+
+.bubble-label:hover {
+    border-color: var(--accent-gold);
+}
+
+/* עיצוב בועה שנבחרה */
+.bubble-group input:checked + .bubble-label {
+    background-color: var(--primary-rose);
+    color: white;
+    border-color: var(--primary-rose);
+}
+
+/* כפתור פעולה ראשי */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-rose);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-family: var(--font-body);
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #a05c65;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+/* אנימציות כניסה */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* רקע כהה מאחורי חלון ההצלחה */
+.modal-overlay {
+    position: fixed !important; /* מכריח את החלון לרחף מעל הכל */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* שם אותו מעל כל שאר האלמנטים בעמוד */
+}
+
+/* תוכן חלון ההצלחה */
+.custom-modal-content {
+    background: var(--bg-pearl);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid var(--accent-gold);
+    max-width: 350px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* אנימציית הכוסות */
+.cheers-animation {
+    font-size: 50px;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.left-glass { animation: toastLeft 1.5s infinite ease-in-out; }
+.right-glass { animation: toastRight 1.5s infinite ease-in-out; transform: scaleX(-1); }
+
+@keyframes toastLeft {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(25deg) translateX(10px); }
+}
+
+@keyframes toastRight {
+    0%, 100% { transform: scaleX(-1) rotate(0deg); }
+    50% { transform: scaleX(-1) rotate(25deg) translateX(10px); }
+}
+
+/*  כפתור האישור בחלון  */
+.custom-modal-content .btn-rose {
+    background-color: var(--primary-rose);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.custom-modal-content .btn-rose:hover { opacity: 0.9; }

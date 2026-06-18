@@ -1,0 +1,177 @@
+/* --- משתני צבעים --- */
+:root {
+    --primary-rose: #B76E79;
+    --accent-gold: #C68E58;
+    --bg-pearl: #FAF9F6;
+    --text-dark: #333333;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Open Sans', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-pearl);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+.cellar-container {
+    width: 100%;
+    max-width: 800px; 
+    margin: 0 auto; /* ממרכז את כל המרתף לאמצע המסך */
+    text-align: center;
+    padding: 20px;
+}
+
+/* --- עיצוב וסידור אזור הכותרת של המרתף --- */
+.cellar-header {
+    text-align: center;
+    padding: 20px 20px 40px 20px; 
+    margin-bottom: 30px;
+    background-color: var(--bg-pearl);
+    border-bottom: 1px solid #e8e2e2;
+}
+
+#cellar-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-rose);
+    font-size: 3rem; 
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.cellar-header p {
+    font-size: 1.2rem;
+    color: var(--accent-gold);
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+/* עיצוב כפתור החזרה לזירה */
+.btn-back {
+    background-color: transparent;
+    color: var(--primary-rose);
+    border: 2px solid var(--primary-rose);
+    padding: 8px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-back:hover {
+    background-color: var(--primary-rose);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* --- תצוגת רשת לכרטיסיות היין --- */
+.cellar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+    display: none; 
+}
+
+/* --- עיצוב כרטיסיית יין קטנה --- */
+.mini-wine-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+    text-align: left;
+    transition: transform 0.2s;
+}
+
+.mini-wine-card:hover {
+    transform: translateY(-5px);
+}
+
+.mini-wine-img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+
+.mini-wine-info {
+    padding: 15px;
+}
+
+.mini-wine-name {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.mini-wine-winery {
+    font-size: 12px;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* כפתור מחיקה יין מהמרתף */
+.btn-remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: #ff4b4b;
+}
+
+.btn-remove:hover {
+    background: #ffebeb;
+}
+
+/* --- מצב מרתף ריק --- */
+.empty-state {
+    display: none;
+    background: #ffffff;
+    padding: 50px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    margin: 40px auto;
+    max-width: 500px;
+}
+
+.empty-state h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-rose);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btn-action {
+    background-color: var(--primary-rose);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-action:hover {
+    background-color: #a05c65;
+}

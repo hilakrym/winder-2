@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wineder - My Cellar</title>
+    
+    <!-- קישורי עיצוב וספריות חיצוניות -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- קבצי העיצוב של האתר -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylecellar.css">
+</head>
+<body>
+
+    <!-- תפריט ניווט עליון -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="images/logo.png" alt="Wineder Logo" width="50" height="50" class="me-2">
+                <span class="brand-name" style="font-family: 'Playfair Display', serif; font-weight: 700; color: #B76E79; letter-spacing: 2px;">WINEDER</span>
+            </a>
+            
+    
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">index</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, 'arena.html')">The Arena</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="checkAccess(event, 'cellar.html')">My Cellar</a></li>
+                </ul>
+
+                <!-- איזור פרטי המשתמש -->
+                <div id="userArea" class="d-flex align-items-center"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- חלונית התחברות -->
+    <div id="loginModal" class="modal-overlay" style="display: none;">
+        <div class="custom-modal-content text-center">
+            <h3 style="color: #C68E58; font-family: 'Playfair Display', serif;">Login Required</h3>
+            <p>Please log in to access this page.</p>
+            <div class="d-grid gap-2">
+                <button class="btn btn-rose" onclick="window.location.href='login.html'">Go to Login</button>
+                <button class="btn btn-link text-muted" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- תוכן העמוד -->    
+    <div class="cellar-container" style="margin-top: 30px;">
+        
+        <div class="cellar-header">
+            <h1 id="cellar-title">My Cellar</h1>
+            <p>Your personal wine collection</p>
+            <button class="btn-back" onclick="window.location.href='arena.html'">Back to Arena</button>
+        </div>
+
+        <!-- כשאין יינות שמורים -->
+        <div class="empty-state" id="empty-state">
+            <h2>Your cellar is empty!</h2>
+            <p>Go to the Swipe Arena to find some great wines to add here.</p>
+            <button class="btn-action" onclick="window.location.href='arena.html'">Find Wines</button>
+        </div>
+        
+        <!-- הצגת היינות שנשמרו -->
+        <div class="cellar-grid" id="cellar-grid">
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scriptlogin.js"></script>
+    <script src="scriptcellar.js"></script>
+</body>
+</html>
