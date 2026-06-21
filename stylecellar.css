@@ -24,7 +24,7 @@ body {
 .cellar-container {
     width: 100%;
     max-width: 800px; 
-    margin: 0 auto; /* ממרכז את כל המרתף לאמצע המסך */
+    margin: 0 auto;
     text-align: center;
     padding: 20px;
 }
@@ -53,7 +53,7 @@ body {
     font-style: italic;
 }
 
-/* עיצוב כפתור החזרה לזירה */
+/* עיצוב כפתורי שליטה בכותרת */
 .btn-back {
     background-color: transparent;
     color: var(--primary-rose);
@@ -69,6 +69,30 @@ body {
     background-color: var(--primary-rose);
     color: white;
     transform: translateY(-2px);
+}
+
+.btn-add-wine {
+    background-color: var(--accent-gold);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-add-wine:hover {
+    background-color: #b07947;
+    transform: translateY(-2px);
+}
+
+/* שדות קלט של המודל */
+.form-control { 
+    margin-bottom: 12px; 
+    border-radius: 10px; 
+    border: 1px solid #ddd;
+    padding: 10px;
 }
 
 /* --- תצוגת רשת לכרטיסיות היין --- */
@@ -231,15 +255,6 @@ body {
     color: white;
 }
 
-.sort-box select {
-    border: none;
-    background: transparent;
-    color: #B76E79;
-    font-weight: 600;
-    cursor: pointer;
-    outline: none;
-}
-
 .dropdown-menu {
     border-radius: 15px;
     border: 1px solid #B76E79;
@@ -258,14 +273,54 @@ body {
     color: white;
 }
 
-/* התאמת ה-Dropdown להיות באותו גובה וסגנון של ה-Chips */
 .dropdown-toggle::after {
     margin-left: 10px;
 }
 
-/* מסדר את כפתורי היקב והשנה אחד ליד השני */
 .filter-dropdowns {
     display: flex;
-    gap: 10px; /* מרווח קבוע של 10 פיקסלים ביניהם */
+    gap: 10px;
     align-items: center;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* התצוגה מנוהלת על ידי ה-JS (flex/none) */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.custom-modal-content {
+    background-color: var(--bg-pearl, #FAF9F6);
+    padding: 35px 25px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px; /* שומר שהחלון לא יהיה רחב מדי */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column; /* מסדר את התוכן מלמעלה למטה */
+    position: relative;
+}
+
+#addWineForm {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#addWineForm .text-start {
+    width: 100%;
+    display: block; /* מוודא שכל שדה מקבל שורה משלו */
+}
+
+#addWineForm input, 
+#addWineForm select {
+    width: 100%; /* מותח את השדות לרוחב החלון הלבן */
+    box-sizing: border-box;
 }

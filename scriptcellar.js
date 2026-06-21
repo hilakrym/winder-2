@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         titleEl.textContent = `${capitalizedName}'s Cellar`;
     }
 
-    // הסטייט שלנו - הסרנו את אלמנט המיון הישן
     let currentState = {
         searchText: '',
         activeType: 'all',
@@ -20,26 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
         filterWinery: 'all'
     };
 
-    // פונקציה למילוי אוטומטי של תפריטי השנים והיקבים לפי מה שיש במרתף
     const populateFilters = (myCellar) => {
         const yearList = document.getElementById('yearDropdown');
         const wineryList = document.getElementById('wineryDropdown');
         
-        // ניקוי רשימות (חוץ מה-All הראשון)
         yearList.innerHTML = '<li><a class="dropdown-item" href="#" data-value="all">All Years</a></li>';
         wineryList.innerHTML = '<li><a class="dropdown-item" href="#" data-value="all">All Wineries</a></li>';
 
-        // מילוי השנים
         [...new Set(myCellar.map(w => w.year))].sort((a,b) => b-a).forEach(y => {
             yearList.innerHTML += `<li><a class="dropdown-item" href="#" data-value="${y}">${y}</a></li>`;
         });
 
-        // מילוי היקבים
         [...new Set(myCellar.map(w => w.winery))].sort().forEach(w => {
             wineryList.innerHTML += `<li><a class="dropdown-item" href="#" data-value="${w}">${w}</a></li>`;
         });
 
-        // מאזינים לבחירה מהתפריט המותאם שלנו
         document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -48,11 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (parentUl.id === 'yearDropdown') {
                     currentState.filterYear = selectedValue;
-                    // עדכון הטקסט על הכפתור
                     document.getElementById('yearBtn').textContent = selectedValue === 'all' ? 'Year' : `Year: ${selectedValue}`;
                 } else {
                     currentState.filterWinery = selectedValue;
-                    // עדכון הטקסט על הכפתור
                     document.getElementById('wineryBtn').textContent = selectedValue === 'all' ? 'Winery' : `Winery: ${selectedValue}`;
                 }
                 
@@ -64,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderCellar = () => {
         let myCellar = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-        // סינון משולב (AND - כל התנאים חייבים להתקיים)
         let filteredWines = myCellar.filter(wine => {
             const matchesSearch = wine.name.toLowerCase().includes(currentState.searchText.toLowerCase());
             const normalizedWineType = wine.type.toLowerCase().replace('é', 'e');
@@ -75,10 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchesSearch && matchesType && matchesYear && matchesWinery;
         });
 
-        // מיון ברירת מחדל לפי שם היין (מכיוון שהורדנו את תיבת המיון ב-HTML)
         filteredWines.sort((a, b) => a.name.localeCompare(b.name));
 
-        // תצוגה
         gridEl.innerHTML = '';
 
         if (filteredWines.length === 0) {
@@ -96,9 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.classList.add('mini-wine-card');
             
+            // שימי לב: הוספנו כאן את ה-onerror למקרה שהקישור שבור, שיציג את תמונת הדיפולט מהתיקייה שלך
             card.innerHTML = `
                 <button class="btn-remove" data-id="${wine.id}" title="Remove from cellar">🗑️</button>
-                <img src="${wine.image}" alt="${wine.name}" class="mini-wine-img">
+                <img src="${wine.image}" alt="${wine.name}" class="mini-wine-img" onerror="this.onerror=null; this.src='wine_images/default-wine.png';">
                 <div class="mini-wine-info">
                     <h3 class="mini-wine-name">${wine.name}</h3>
                     <p class="mini-wine-winery">${wine.winery} | ${wine.year}</p>
@@ -110,12 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
         attachRemoveListeners();
     };
 
-    // מחיקת יין
     const removeWine = (wineId) => {
         let myCellar = JSON.parse(localStorage.getItem(storageKey)) || [];
         myCellar = myCellar.filter(wine => wine.id != wineId);
         localStorage.setItem(storageKey, JSON.stringify(myCellar));
-        // חשוב לעדכן גם את התפריטים אם נמחק היין האחרון מיקב מסוים!
         populateFilters(myCellar);
         renderCellar();
     };
@@ -128,14 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // חיבור כל המאזינים (Events) המעודכנים!
     const attachFiltersEvents = () => {
         document.getElementById('searchInput').addEventListener('input', (e) => {
             currentState.searchText = e.target.value;
             renderCellar();
         });
 
-        // מאזינים רק ללחיצות על תגיות מסוג היין
         document.querySelectorAll('.chip[data-type]').forEach(chip => {
             chip.addEventListener('click', (e) => {
                 document.querySelector('.chip.active').classList.remove('active');
@@ -146,7 +132,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // הפעלה ראשונה כשנכנסים לדף
+    window.showAddWineModal = () => {
+        document.getElementById('addWineForm').reset();
+        document.getElementById('addWineModal').style.display = 'flex';
+    };
+
+    window.closeAddWineModal = () => {
+        document.getElementById('addWineModal').style.display = 'none';
+    };
+
+    window.saveNewWine = (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('newWineName').value.trim();
+        const winery = document.getElementById('newWineWinery').value.trim();
+        const year = parseInt(document.getElementById('newWineYear').value);
+        const type = document.getElementById('newWineType').value;
+        const inputImage = document.getElementById('newWineImage').value.trim();
+
+        // בדיקת אנגלית
+        const englishRegex = /^[A-Za-z0-9\s\-,.'&]+$/;
+        if (!englishRegex.test(name) || !englishRegex.test(winery)) {
+            alert("Please use English characters only for Name and Winery.");
+            return;
+        }
+
+        // בדיקת שנתון הגיוני
+        const currentYear = new Date().getFullYear();
+        if (year < 1800 || year > currentYear + 1) {
+            alert(`Please enter a valid year (1800 - ${currentYear + 1}).`);
+            return;
+        }
+
+        // שימוש בקישור שהוזן או בתמונת ברירת המחדל מהתיקייה שלך
+        let finalImage = inputImage;
+        if (!finalImage) {
+            finalImage = 'wine_images/default-wine.png'; 
+        }
+
+        const newWine = {
+            id: Date.now(),
+            name: name,
+            winery: winery,
+            year: year,
+            type: type,
+            image: finalImage
+        };
+
+        let myCellar = JSON.parse(localStorage.getItem(storageKey)) || [];
+        myCellar.push(newWine);
+        localStorage.setItem(storageKey, JSON.stringify(myCellar));
+
+        closeAddWineModal();
+        populateFilters(myCellar);
+        renderCellar();
+    };
+
+    // הפעלה ראשונה
     let initialCellar = JSON.parse(localStorage.getItem(storageKey)) || [];
     populateFilters(initialCellar);
     attachFiltersEvents();
