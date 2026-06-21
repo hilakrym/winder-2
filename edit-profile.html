@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wineder - Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylelogin.css">
+</head>
+<body style="background-color: var(--bg-pearl); min-height: 100vh; display: flex; flex-direction: column; padding-top: 100px;">
+
+    <nav class="navbar navbar-expand-lg sticky-top w-100 position-absolute top-0">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="images/logo.png" alt="Wineder Logo" width="50" height="50" class="me-2">
+                <span class="brand-name">WINEDER</span>
+            </a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <div id="userArea" class="d-flex align-items-center"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container d-flex justify-content-center align-items-center flex-grow-1 my-4">
+        <div class="auth-container p-4 bg-white rounded-4 shadow" style="max-width: 500px; width: 100%; border: 1px solid rgba(183, 110, 121, 0.2);">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-sliders fa-3x mb-2" style="color: var(--primary-rose);"></i>
+                <h2>Account Settings</h2>
+                <p class="text-muted small">Modify your profile details and wine preferences</p>
+            </div>
+
+            <form id="editProfileForm" novalidate>
+                <div class="mb-3 text-start">
+                    <label for="editFirstName" class="form-label fw-bold small">First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="editFirstName" required>
+                        <div class="invalid-feedback">Please enter your first name.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label for="editFirstName" class="form-label fw-bold small">First Name</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="fas fa-user fs-6"></i></span>
+                        <input type="text" class="form-control fs-6" id="editFirstName" required>
+                        <div class="invalid-feedback fs-6">Please enter your first name.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label for="editEmail" class="form-label fw-bold small">Email Address</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="fas fa-envelope fs-6"></i></span>
+                        <input type="email" class="form-control fs-6" id="editEmail" required>
+                        <div class="invalid-feedback fs-6">Please enter a valid email address.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label for="editPassword" class="form-label fw-bold small">Password</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text"><i class="fas fa-lock fs-6"></i></span>
+                        <input type="password" class="form-control fs-6" id="editPassword" required>
+                        <button class="btn btn-outline-secondary bg-light border" type="button" id="togglePassword">
+                            <i class="fas fa-eye text-muted"></i>
+                        </button>
+                        <div class="invalid-feedback fs-6">Password must be at least 6 characters long.</div>
+                    </div>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="form-label fw-bold small d-block">Preferred Sweetness</label>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <input type="checkbox" class="btn-check wine-pref" id="sweet-dry" value="Dry">
+                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-dry">Dry</label>
+
+                        <input type="checkbox" class="btn-check wine-pref" id="sweet-semi" value="Semi-Dry">
+                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-semi">Semi-Dry</label>
+
+                        <input type="checkbox" class="btn-check wine-pref" id="sweet-sweet" value="Sweet">
+                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-sweet">Sweet</label>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" id="saveBtn" class="btn btn-rose text-white fw-bold py-2 shadow-sm d-none" style="background-color: var(--primary-rose); border: none;">Save Changes</button>
+                    <a href="index.html" class="btn btn-outline-secondary py-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editSuccessModal" class="modal-overlay" style="display: none;">
+        <div class="custom-modal-content text-center">
+            <div class="cheers-animation">
+                <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <h3 style="color: var(--accent-gold); font-family: 'Playfair Display', serif; font-weight: 700;">Profile Updated!</h3>
+            <p style="font-weight: 600; color: #333; margin-bottom: 20px;">Your changes have been saved successfully.</p>
+            <div class="d-grid">
+                <button class="btn btn-rose text-white" onclick="window.location.href='index.html'">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scriptlogin.js"></script>
+    <script src="scripthome.js"></script>
+    <script src="scripteditprofile.js"></script>
+</body>
+</html>

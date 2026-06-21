@@ -5,8 +5,9 @@ console.log("Wineder Script Loaded");
 // בעת ההתנתקות מנקה את המשתמש מהזיכרון ומחזיר לדף הבית
 window.logout = function() {
     localStorage.removeItem('firstName');
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
+    localStorage.removeItem('currentUser'); // הוספנו את השורה הזו
+    window.location.href = 'index.html'; 
+
 };
 
 // הצגת הודעת הצלחה בחלון קופץ
@@ -204,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (foundUser) {
                 localStorage.setItem('firstName', foundUser.firstName);
                 localStorage.setItem('currentUser', foundUser.email);
-
                 window.showSuccessModal(
                     `Welcome back, ${foundUser.firstName}!`,
                     "Discover your next favorite vintage with a single swipe."
@@ -244,6 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     }
+
+    
 
     // קריאה לפונקציה שמעדכנת את המסך בסיום טעינת כל ההגדרות
     updateHeader();

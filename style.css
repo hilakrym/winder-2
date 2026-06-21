@@ -208,6 +208,16 @@ h1, h2, .brand-name {
     margin: 0;
     font-weight: 600;
 }
+/* עיצוב לאייקון עריכת פרופיל */
+#userArea a.text-secondary {
+    color: var(--gold) !important;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#userArea a.text-secondary:hover {
+    color: var(--rose) !important;
+    transform: rotate(90deg); /* אנימציה חמודה של סיבוב גלגל השיניים */
+}
 
 .profile-stat { padding: 20px 0; }
 .border-stat { border-left: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0; }
