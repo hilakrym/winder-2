@@ -204,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (foundUser) {
                 localStorage.setItem('firstName', foundUser.firstName);
+                localStorage.setItem('lastName', foundUser.lastName);
                 localStorage.setItem('currentUser', foundUser.email);
                 window.showSuccessModal(
                     `Welcome back, ${foundUser.firstName}!`,

@@ -13,6 +13,8 @@ body {
     background-color: var(--pearl);
     font-family: 'Open Sans', sans-serif;
     color: #333;
+    min-height: 100vh; /* מונע תקלות גובה */
+    padding-top: 0;   /* 0 כדי לא לדחוף את התפריט */
 }
 
 /* פונט לכותרות*/
@@ -224,3 +226,32 @@ h1, h2, .brand-name {
 .profile-icon { font-size: 1.8rem; color: #C68E58; }
 .stat-label { font-size: 0.75rem; letter-spacing: 1px; color: #888; font-weight: bold; margin-bottom: 5px; }
 .stat-value { font-size: 1.5rem; color: #B76E79; font-weight: bold; margin: 0; }
+
+/* הרחבה קלה של כלי הקיבול של הטופס למראה מרווח */
+.auth-container {
+    max-width: 550px !important; /* מגדיל מעט את רוחב הטופס הכללי */
+}
+
+/* עיצוב שדות הקלט שיראו מזמינים, גדולים ונקיים */
+.form-control-lg {
+    border: 1px solid #e0e0e0 !important;
+    padding: 12px 16px !important;
+    transition: all 0.3s ease;
+}
+
+.form-control-lg:focus {
+    border-color: var(--primary-rose) !important;
+    box-shadow: 0 0 0 0.25rem rgba(183, 110, 121, 0.15) !important;
+}
+
+
+/* מרווח לטופס כדי שלא יידבק לתפריט העליון */
+.edit-profile-container {
+    margin-top: 50px; 
+    padding: 20px;
+}
+/* כל עמוד שיש בו מכל בסיסי של טופס יקבל מרווח יפה מהתפריט */
+.edit-profile-wrapper {
+    margin-top: 40px;
+    padding-bottom: 50px;
+}

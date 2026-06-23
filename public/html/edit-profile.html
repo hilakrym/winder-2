@@ -9,21 +9,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/stylelogin.css">
-</head>
-<body style="background-color: var(--bg-pearl); min-height: 100vh; display: flex; flex-direction: column; padding-top: 100px;">
+    <style>
+        /* איפוס העיצוב (כיבוי הקו והצבע) של כל הקישורים בתפריט בעמוד הזה */
+        .navbar-nav .nav-link {
+            color: #B76E79 !important; 
+            text-decoration: none !important;
+            border-bottom: none !important;
+            font-weight: bold;
+        }
 
-    <nav class="navbar navbar-expand-lg sticky-top w-100 position-absolute top-0">
+        /* יצירת מראה "פעיל" לגלגל השיניים: צבע אפור וקו תחתון */
+        #userArea a[title="Edit Profile"] {
+            color: #888 !important; /* צבע אפור */
+            text-decoration: none !important;
+            border-bottom: 2px solid #888 !important; /*  קו תחתון כשנמצאים בעמוד */
+            padding-bottom: 4px !important; /* מרחיק את הקו מעט כלפי מטה כדי שייראה אלגנטי */
+            display: inline-block !important; /* מוודא שהקו יתפוס בדיוק את הרוחב של האייקון */
+        }
+
+        
+        /* מוודא שגם האייקון עצמו מקבל את הצבע האפור */
+        #userArea a[title="Edit Profile"] i {
+            color: #888 !important;
+        }
+    </style>
+</head>
+<body style="display: block !important;">
+
+    <!-- תפריט הניווט -->
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="../images/logo.png" alt="Wineder Logo" width="50" height="50" class="me-2">
-                <span class="brand-name">WINEDER</span>
+                <span class="brand-name" style="font-family: 'Playfair Display', serif; font-weight: 700; color: #B76E79; letter-spacing: 2px;">WINEDER</span>
             </a>
-            <div class="collapse navbar-collapse justify-content-end">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- קישורי ניווט באתר -->            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, '/arena')">The Arena</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="checkAccess(event, '/cellar')">My Cellar</a></li>
+                </ul>
+
+                 <!-- אזור המשתמש לאחר התחברות -->
                 <div id="userArea" class="d-flex align-items-center"></div>
             </div>
         </div>
-    </nav>
-
+    </nav>    
+           
+                               
     <div class="container d-flex justify-content-center align-items-center flex-grow-1 my-4">
         <div class="auth-container p-4 bg-white rounded-4 shadow" style="max-width: 500px; width: 100%; border: 1px solid rgba(183, 110, 121, 0.2);">
             <div class="text-center mb-4">
@@ -31,57 +70,81 @@
                 <h2>Account Settings</h2>
                 <p class="text-muted small">Modify your profile details and wine preferences</p>
             </div>
+            <div class="container edit-profile-container">
+                <div class="auth-container mx-auto">
+                    <form id="editProfileForm" novalidate>
+                        <div class="mb-3 text-start">
+                            <label for="editFirstName" class="form-label fw-bold text-secondary small">
+                                <i class="fas fa-user me-2" style="color: var(--primary-rose);"></i>First Name
+                            </label>
+                            <input type="text" class="form-control form-control-lg fs-6 rounded-3" id="editFirstName" required>
+                            <div class="invalid-feedback">Please enter your first name.</div>
+                        </div>
 
-            <form id="editProfileForm" novalidate>
-                <div class="mb-3 text-start">
-                    <label for="editFirstName" class="form-label fw-bold small">First Name</label>
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-text"><i class="fas fa-user fs-6"></i></span>
-                        <input type="text" class="form-control fs-6" id="editFirstName" required>
-                        <div class="invalid-feedback fs-6">Please enter your first name.</div>
-                    </div>
+                        <div class="mb-3 text-start">
+                            <label for="editLastName" class="form-label fw-bold text-secondary small">
+                                <i class="fas fa-user-tag me-2" style="color: var(--primary-rose);"></i>Last Name
+                            </label>
+                            <input type="text" class="form-control form-control-lg fs-6 rounded-3" id="editLastName" placeholder="Add your last name">
+                        </div>
+
+                        <div class="mb-3 text-start">
+                            <label for="editEmail" class="form-label fw-bold text-secondary small">
+                                <i class="fas fa-envelope me-2" style="color: var(--primary-rose);"></i>Email Address
+                            </label>
+                            <input type="email" class="form-control form-control-lg fs-6 rounded-3" id="editEmail" required>
+                            <div class="form-text xsmall text-muted">Changing your email will update your login ID.</div>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+
+                        <div class="mb-3 text-start">
+                            <label for="editPassword" class="form-label fw-bold text-secondary small">
+                                <i class="fas fa-lock me-2" style="color: var(--primary-rose);"></i>Password
+                            </label>
+                            <div class="position-relative">
+                                <input type="password" class="form-control form-control-lg fs-6 rounded-3 pe-5" id="editPassword" required>
+                                <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent pe-3" type="button" id="togglePassword" style="z-index: 10;">
+                                    <i class="fas fa-eye text-muted"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Password must be at least 6 characters long.</div>
+                        </div>
+
+                        <div class="mb-3 text-start">
+                            <label class="form-label fw-bold small d-block">Preferred Wine Type</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <input type="checkbox" class="btn-check wine-pref" id="type-red" value="Red">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="type-red">Red</label>
+
+                                <input type="checkbox" class="btn-check wine-pref" id="type-white" value="White">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="type-white">White</label>
+
+                                <input type="checkbox" class="btn-check wine-pref" id="type-rose" value="Rosé">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="type-rose">Rosé</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 text-start">
+                            <label class="form-label fw-bold small d-block">Preferred Sweetness</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <input type="checkbox" class="btn-check wine-pref" id="sweet-dry" value="Dry">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-dry">Dry</label>
+
+                                <input type="checkbox" class="btn-check wine-pref" id="sweet-semi" value="Semi-Dry">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-semi">Semi-Dry</label>
+
+                                <input type="checkbox" class="btn-check wine-pref" id="sweet-sweet" value="Sweet">
+                                <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-sweet">Sweet</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" id="saveBtn" class="btn btn-rose text-white fw-bold py-2 shadow-sm d-none" style="background-color: var(--primary-rose); border: none;">Save Changes</button>
+                            <a href="/" class="btn btn-outline-secondary py-2">Cancel</a>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3 text-start">
-                    <label for="editEmail" class="form-label fw-bold small">Email Address</label>
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-text"><i class="fas fa-envelope fs-6"></i></span>
-                        <input type="email" class="form-control fs-6" id="editEmail" required>
-                        <div class="invalid-feedback fs-6">Please enter a valid email address.</div>
-                    </div>
-                </div>
-
-                <div class="mb-3 text-start">
-                    <label for="editPassword" class="form-label fw-bold small">Password</label>
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-text"><i class="fas fa-lock fs-6"></i></span>
-                        <input type="password" class="form-control fs-6" id="editPassword" required>
-                        <button class="btn btn-outline-secondary bg-light border" type="button" id="togglePassword">
-                            <i class="fas fa-eye text-muted"></i>
-                        </button>
-                        <div class="invalid-feedback fs-6">Password must be at least 6 characters long.</div>
-                    </div>
-                </div>
-
-                <div class="mb-4 text-start">
-                    <label class="form-label fw-bold small d-block">Preferred Sweetness</label>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <input type="checkbox" class="btn-check wine-pref" id="sweet-dry" value="Dry">
-                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-dry">Dry</label>
-
-                        <input type="checkbox" class="btn-check wine-pref" id="sweet-semi" value="Semi-Dry">
-                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-semi">Semi-Dry</label>
-
-                        <input type="checkbox" class="btn-check wine-pref" id="sweet-sweet" value="Sweet">
-                        <label class="btn btn-outline-secondary btn-sm rounded-pill px-3" for="sweet-sweet">Sweet</label>
-                    </div>
-                </div>
-
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" id="saveBtn" class="btn btn-rose text-white fw-bold py-2 shadow-sm d-none" style="background-color: var(--primary-rose); border: none;">Save Changes</button>
-                    <a href="/" class="btn btn-outline-secondary py-2">Cancel</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
