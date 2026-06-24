@@ -72,7 +72,7 @@
             </div>
             <div class="container edit-profile-container">
                 <div class="auth-container mx-auto">
-                    <form id="editProfileForm" novalidate>
+                    <form id="editProfileForm" action="/profile" method="POST" novalidate>
                         <div class="mb-3 text-start">
                             <label for="editFirstName" class="form-label fw-bold text-secondary small">
                                 <i class="fas fa-user me-2" style="color: var(--primary-rose);"></i>First Name
@@ -92,8 +92,8 @@
                             <label for="editEmail" class="form-label fw-bold text-secondary small">
                                 <i class="fas fa-envelope me-2" style="color: var(--primary-rose);"></i>Email Address
                             </label>
-                            <input type="email" class="form-control form-control-lg fs-6 rounded-3" id="editEmail" required>
-                            <div class="form-text xsmall text-muted">Changing your email will update your login ID.</div>
+                            <input type="email" class="form-control form-control-lg fs-6 rounded-3" id="editEmail" required readonly>
+                            <div class="form-text xsmall text-muted">Email is used as your login ID and cannot be changed here.</div>
                             <div class="invalid-feedback">Please enter a valid email address.</div>
                         </div>
 
