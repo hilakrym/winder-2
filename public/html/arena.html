@@ -86,11 +86,14 @@
                 </div>
             </div>
 
-
             <div class="empty-state" id="empty-state">
                 <h2>That's it for today!</h2>
                 <p>You've seen all our recommendations based on your taste.</p>
-                <button class="btn-cellar" onclick="window.location.href='/cellar'">Go to My Cellar</button>
+                <div class="d-flex gap-3 justify-content-center mt-3">
+                    <button class="btn btn-outline-secondary px-4 py-2 fw-bold" id="btn-retry-dislikes" style="display: none; border-radius: 25px;">Let's go again</button>
+                    
+                    <button class="btn btn-rose text-white px-4 py-2 fw-bold" style="background-color: var(--primary-rose); border-radius: 25px;" onclick="window.location.href='/cellar'">Go to My Cellar</button>
+                </div>
             </div>
         </div>
     </div>

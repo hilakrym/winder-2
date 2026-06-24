@@ -50,6 +50,32 @@ app.get("/wines", (req, res) => {
   });
 });
 
+// שליפת יינות לארנה (מסנן החוצה יינות שכבר קיימים במרתף של המשתמש)
+app.get("/arena-wines", (req, res) => {
+  const userEmail = req.query.email;
+  
+  if (!userEmail) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  // השאילתה מושכת רק יינות שה-ID שלהם לא מופיע בטבלת המרתף תחת האימייל של המשתמש
+  const sql = `
+    SELECT * FROM wines 
+    WHERE id NOT IN (
+      SELECT wine_id FROM user_cellar WHERE user_email = ?
+    )
+  `;
+
+  db.query(sql, [userEmail], (err, results) => {
+    if (err) {
+      console.log("Error fetching arena wines:", err);
+      res.status(500).json({ message: "Error fetching wines" });
+      return;
+    }
+    res.json(results);
+  });
+});
+
 app.get("/cellar/:email", (req, res) => {
   const userEmail = req.params.email;
   const sql = `

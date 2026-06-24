@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     let winesToShow = [];
+    let dislikedWines = []; // מערך לשמירת יינות שנדחו
     let currentIndex = 0;
 
     const cardElement = document.getElementById('wine-card');
@@ -69,23 +70,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const loadWinesFromServer = async () => {
         try {
-            const response = await fetch('/wines');
+            // שולחים לשרת את בקשת היינות יחד עם המייל של המשתמש המחובר
+            const response = await fetch(`/arena-wines?email=${currentUser}`);
             const wines = await response.json();
-            if (!response.ok) return;
+
+            if (!response.ok) {
+                console.log("Could not load arena wines.");
+                return;
+            }
 
             winesToShow = wines;
-            winesToShow.sort(() => Math.random() - 0.5);
             renderWine();
-        } catch (error) { console.log("Error loading wines:", error); }
+        } catch (error) {
+            console.log("Error:", error);
+        }
     };
 
     const renderWine = () => {
+        
+        // החליפי את החלק של מסך הסיום בתוך הפונקציה renderWine לקוד הזה:
         if (currentIndex >= winesToShow.length) {
-            cardArea.style.display = 'none';
-            emptyState.style.display = 'block';
+            cardElement.style.display = 'none';
+            emptyState.style.display = 'flex';
+            
+            const btnRetry = document.getElementById('btn-retry-dislikes');
+            
+            // אם יש יינות שנדחו, מציגים את כפתור ההזדמנות השנייה
+            if (dislikedWines.length > 0 && btnRetry) {
+                btnRetry.style.display = 'block';
+                
+                // מה קורה כשלוחצים עליו
+                btnRetry.onclick = () => {
+                    winesToShow = [...dislikedWines]; // מעבירים את היינות הנדחים למערך הראשי
+                    dislikedWines = []; // מאפסים את הנדחים
+                    currentIndex = 0; // חוזרים לכרטיס הראשון
+                    
+                    emptyState.style.display = 'none'; // מעלימים את מסך הסיום
+                    cardElement.style.display = 'flex'; // מציגים שוב את הכרטיס
+                    renderWine(); // מציירים את היין הראשון
+                };
+            } else if (btnRetry) {
+                btnRetry.style.display = 'none'; // מסתירים אם אין נדחים
+            }
             return;
         }
-
         const wine = winesToShow[currentIndex];
         imgEl.src = wine.image || '../images/wine_images/default-wine.png';
         imgEl.onerror = function () { this.onerror = null; this.src = '../images/wine_images/default-wine.png'; };
@@ -108,12 +136,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const handleSwipe = async (direction) => {
         const currentWine = winesToShow[currentIndex];
         if (!currentWine) return;
-
         if (direction === 'like') {
             cardElement.classList.add('swipe-right');
             await saveToCellar(currentWine);
         } else {
             cardElement.classList.add('swipe-left');
+            dislikedWines.push(currentWine);
         }
 
         // שידור ההחלקה כדי לקבל נקודות
