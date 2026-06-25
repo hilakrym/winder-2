@@ -13,14 +13,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(publicPath));
 
-// -------------------- Routes של עמודים --------------------
+// -------------------- הגדרות קבועות של הניקוד והדרגות --------------------
+const DAILY_GOAL = 5;
+const SWIPE_POINTS = 2;
+const DAILY_GOAL_BONUS = 50;
+const CUSTOM_WINE_POINTS = 50;
+
+// כל שינוי בדרגות צריך להתבצע כאן, כדי שהשרת יחשב את הדרגה באותה דרך בכל פעולה.
+function calculateLevel(points) {
+  if (points >= 500) return "Master of Wine";
+  if (points >= 300) return "Vintage Expert";
+  if (points >= 170) return "Wine Lover";
+  if (points >= 100) return "Curious Taster";
+  return "Casual Sipper";
+}
+
+
+// -------------------- נתיבי עמודים --------------------
 app.get("/", (req, res) => res.sendFile(path.join(htmlPath, "index.html")));
 app.get("/login", (req, res) => res.sendFile(path.join(htmlPath, "login.html")));
 app.get("/arena", (req, res) => res.sendFile(path.join(htmlPath, "arena.html")));
 app.get("/cellar", (req, res) => res.sendFile(path.join(htmlPath, "cellar.html")));
 app.get("/edit-profile", (req, res) => res.sendFile(path.join(htmlPath, "edit-profile.html")));
 
-// -------------------- Routes של מסד נתונים --------------------
+// -------------------- נתיבים שעובדים מול מסד הנתונים --------------------
+// יצירת משתמש חדש עם ניקוד התחלתי ודרגה התחלתית.
 app.post("/signup", (req, res) => {
   const { firstName, lastName, email, password, winePreferences } = req.body;
   if (!firstName || !lastName || !email || !password) return res.status(400).json({ message: "Please fill all required fields." });
@@ -34,6 +51,7 @@ app.post("/signup", (req, res) => {
   });
 });
 
+// התחברות משתמש קיים והחזרת הנתונים שצריך לשמור בדפדפן.
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   db.query(`SELECT * FROM users WHERE email = ? AND password = ?`, [email, password], (err, results) => {
@@ -76,6 +94,7 @@ app.get("/arena-wines", (req, res) => {
   });
 });
 
+// שליפת כל היינות של משתמש מסוים: גם יינות רגילים וגם יינות שהמשתמש הוסיף בעצמו.
 app.get("/cellar/:email", (req, res) => {
   const userEmail = req.params.email;
   const sql = `
@@ -115,90 +134,149 @@ app.delete("/custom-wine", (req, res) => {
   });
 });
 
-// בונוס 50 נקודות על הוספת יין אישי
+// הוספת יין אישי למרתף ועדכון הניקוד בהתאם
 app.post("/custom-wine", (req, res) => {
   const { userEmail, name, winery, type, year, image } = req.body;
   const sql = `INSERT INTO custom_wines (user_email, name, winery, type, year, image) VALUES (?, ?, ?, ?, ?, ?)`;
-  
+
   db.query(sql, [userEmail, name, winery, type, year, image || "../images/wine_images/default-wine.png"], (err, result) => {
-      if (err) return res.status(500).json({ message: "Error adding custom wine." });
+    if (err) return res.status(500).json({ message: "Error adding custom wine." });
 
-      // עדכון הניקוד בבסיס הנתונים וחישוב דרגה מחדש
-      db.query(`SELECT points FROM users WHERE email = ?`, [userEmail], (err, results) => {
-          if (!err && results.length > 0) {
-              let newPoints = results[0].points + 50;
-              let newLevel = 'Casual Sipper';
-              if (newPoints >= 8000) newLevel = 'Master of Wine';
-              else if (newPoints >= 3500) newLevel = 'Vintage Expert';
-              else if (newPoints >= 1200) newLevel = 'Wine Lover';
-              else if (newPoints >= 400) newLevel = 'Curious Taster';
+    // אחרי שהיין נשמר, שולפים את הניקוד הקיים כדי להוסיף את הבונוס.
+    db.query(`SELECT points, level FROM users WHERE email = ?`, [userEmail], (selectErr, users) => {
+      if (selectErr || users.length === 0) {
+        return res.status(500).json({ message: "Wine was added, but gamification stats could not be loaded." });
+      }
 
-              db.query(`UPDATE users SET points = ?, level = ? WHERE email = ?`, [newPoints, newLevel, userEmail]);
+      // שומרים גם את הדרגה הישנה כדי לדעת אם צריך להציג הודעת עליית דרגה.
+      const oldPoints = Number(users[0].points) || 0;
+      const oldLevel = users[0].level || calculateLevel(oldPoints);
+      const newPoints = oldPoints + CUSTOM_WINE_POINTS;
+      const newLevel = calculateLevel(newPoints);
+
+      db.query(
+        `UPDATE users SET points = ?, level = ? WHERE email = ?`,
+        [newPoints, newLevel, userEmail],
+        (updateErr) => {
+          if (updateErr) {
+            return res.status(500).json({ message: "Wine was added, but points could not be updated." });
           }
-      });
 
-      res.json({ message: "Custom wine added.", wine: { id: result.insertId, name, winery, type, year, source: "custom" } });
-  });
-});
-
-// -------------------- לוגיקת המשחוק המרכזית (Gamification) --------------------
-app.post("/swipe", (req, res) => {
-  const { userEmail } = req.body;
-
-  db.query(`SELECT points, level, streak, daily_swipes_count, last_active_date FROM users WHERE email = ?`, [userEmail], (err, results) => {
-    if (err || results.length === 0) return res.status(500).json({ message: "Error fetching user data." });
-
-    let { points, streak, daily_swipes_count, last_active_date } = results[0];
-    const todayObj = new Date();
-    const formattedToday = todayObj.toISOString().split('T')[0];
-
-    let diffDays = 0;
-    if (last_active_date) {
-        const lastDateObj = new Date(last_active_date);
-        const utcToday = Date.UTC(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate());
-        const utcLast = Date.UTC(lastDateObj.getFullYear(), lastDateObj.getMonth(), lastDateObj.getDate());
-        diffDays = Math.floor((utcToday - utcLast) / (1000 * 60 * 60 * 24));
-    } else {
-        diffDays = 999; 
-    }
-
-    // ניהול רצף ואיפוס: אם עבר יותר מיום אחד, או שאתמול לא הושלמו 5 החלקות - מאפסים
-    if (diffDays >= 1) {
-        if (diffDays > 1 || daily_swipes_count < 5) {
-            streak = 0; 
+          res.json({
+            message: "Custom wine added.",
+            wine: {
+              id: result.insertId,
+              name,
+              winery,
+              type,
+              year,
+              image: image || "../images/wine_images/default-wine.png",
+              source: "custom"
+            },
+            stats: {
+              points: newPoints,
+              level: newLevel,
+              pointsDelta: CUSTOM_WINE_POINTS,
+              levelUp: oldLevel !== newLevel,
+              oldLevel
+            }
+          });
         }
-        daily_swipes_count = 0;
-    }
-
-    points += 2; // 2 נקודות על כל החלקה
-    daily_swipes_count += 1;
-
-    // בונוס יומי ושבועי
-    if (daily_swipes_count === 5) {
-        points += 50; 
-        streak += 1;
-        
-        if (streak > 0 && streak % 7 === 0) {
-            const weeks = streak / 7;
-            points += (250 * weeks);
-        }
-    }
-
-    // עדכון דרגות
-    let newLevel = 'Casual Sipper';
-    if (points >= 8000) newLevel = 'Master of Wine';
-    else if (points >= 3500) newLevel = 'Vintage Expert';
-    else if (points >= 1200) newLevel = 'Wine Lover';
-    else if (points >= 400) newLevel = 'Curious Taster';
-
-    db.query(`UPDATE users SET points = ?, level = ?, streak = ?, daily_swipes_count = ?, last_active_date = ? WHERE email = ?`, 
-      [points, newLevel, streak, daily_swipes_count, formattedToday, userEmail], (updateErr) => {
-        if (updateErr) return res.status(500).json({ message: "Error updating gamification stats." });
-        res.json({ points, level: newLevel, streak, dailySwipesCount: daily_swipes_count });
+      );
     });
   });
 });
 
+// -------------------- לוגיקת הניקוד המרכזית --------------------
+app.post("/swipe", (req, res) => {
+  const { userEmail } = req.body;
+
+  db.query(
+    `SELECT points, level, streak, daily_swipes_count, last_active_date FROM users WHERE email = ?`,
+    [userEmail],
+    (err, results) => {
+      if (err || results.length === 0) {
+        return res.status(500).json({ message: "Error fetching user data." });
+      }
+
+      // הנתונים האלו קובעים כמה נקודות להוסיף ואם הושלם יעד יומי.
+      let { points, level, streak, daily_swipes_count, last_active_date } = results[0];
+
+      points = Number(points) || 0;
+      streak = Number(streak) || 0;
+      daily_swipes_count = Number(daily_swipes_count) || 0;
+
+      const oldLevel = level || calculateLevel(points);
+      const todayObj = new Date();
+      const formattedToday = todayObj.toISOString().split("T")[0];
+
+      let diffDays = 0;
+      if (last_active_date) {
+        const lastDateObj = new Date(last_active_date);
+        const utcToday = Date.UTC(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate());
+        const utcLast = Date.UTC(lastDateObj.getFullYear(), lastDateObj.getMonth(), lastDateObj.getDate());
+        diffDays = Math.floor((utcToday - utcLast) / (1000 * 60 * 60 * 24));
+      } else {
+        diffDays = 999;
+      }
+
+      // ניהול רצף ואיפוס: אם עבר יותר מיום אחד, או שאתמול לא הושלמו 5 החלקות - מאפסים
+      if (diffDays >= 1) {
+        if (diffDays > 1 || daily_swipes_count < DAILY_GOAL) {
+          streak = 0;
+        }
+        daily_swipes_count = 0;
+      }
+
+      points += SWIPE_POINTS;
+      daily_swipes_count += 1;
+
+      let bonusPoints = 0;
+      let dailyGoalCompleted = false;
+
+      // כאשר מגיעים בדיוק לחמש החלקות, מוסיפים את הבונוס היומי ומעדכנים רצף.
+      if (daily_swipes_count === DAILY_GOAL) {
+        dailyGoalCompleted = true;
+        bonusPoints += DAILY_GOAL_BONUS;
+        points += DAILY_GOAL_BONUS;
+        streak += 1;
+
+        if (streak > 0 && streak % 7 === 0) {
+          const weeks = streak / 7;
+          const weeklyBonus = 250 * weeks;
+          bonusPoints += weeklyBonus;
+          points += weeklyBonus;
+        }
+      }
+
+      const newLevel = calculateLevel(points);
+
+      db.query(
+        `UPDATE users SET points = ?, level = ?, streak = ?, daily_swipes_count = ?, last_active_date = ? WHERE email = ?`,
+        [points, newLevel, streak, daily_swipes_count, formattedToday, userEmail],
+        (updateErr) => {
+          if (updateErr) {
+            return res.status(500).json({ message: "Error updating gamification stats." });
+          }
+
+          res.json({
+            points,
+            level: newLevel,
+            streak,
+            dailySwipesCount: daily_swipes_count,
+            pointsDelta: SWIPE_POINTS,
+            bonusPoints,
+            dailyGoalCompleted,
+            levelUp: oldLevel !== newLevel,
+            oldLevel
+          });
+        }
+      );
+    }
+  );
+});
+
+// שליפת פרטי פרופיל למסך עריכת המשתמש.
 app.get("/profile/:email", (req, res) => {
   db.query(`SELECT * FROM users WHERE email = ?`, [req.params.email], (err, results) => {
     if (err || results.length === 0) return res.status(404).json({ message: "User not found." });
@@ -206,6 +284,7 @@ app.get("/profile/:email", (req, res) => {
   });
 });
 
+// שמירת השינויים שהמשתמש ביצע בפרופיל ובהעדפות היין.
 app.put("/profile", (req, res) => {
   const { currentEmail, firstName, lastName, password, winePreferences } = req.body;
   const prefs = Array.isArray(winePreferences) ? winePreferences.join(",") : "";

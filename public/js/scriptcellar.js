@@ -20,8 +20,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         titleEl.textContent = `${capitalizedName}'s Cellar`;
     }
 
+    // כל היינות של המשתמש נשמרים כאן אחרי השליפה מהשרת.
     let myCellar = [];
 
+    // מצב הסינון הנוכחי של המרתף.
     let currentState = {
         searchText: '',
         activeType: 'all',
@@ -29,6 +31,80 @@ document.addEventListener('DOMContentLoaded', async () => {
         filterWinery: 'all'
     };
 
+    // מחלקות העיצוב של הדרגות, כדי לעדכן צבע אחרי הוספת יין.
+    const levelClassNames = [
+        'level-casual-sipper',
+        'level-curious-taster',
+        'level-wine-lover',
+        'level-vintage-expert',
+        'level-master-of-wine'
+    ];
+
+    const calculateLevel = (points) => {
+        if (points >= 500) return 'Master of Wine';
+        if (points >= 300) return 'Vintage Expert';
+        if (points >= 170) return 'Wine Lover';
+        if (points >= 100) return 'Curious Taster';
+        return 'Casual Sipper';
+    };
+
+    const getLevelClass = (level) => {
+        return 'level-' + String(level || 'Casual Sipper')
+            .toLowerCase()
+            .replaceAll(' ', '-');
+    };
+
+    const applyLevelStyle = (levelEl, level) => {
+        if (window.applyWinederLevelStyle) {
+            window.applyWinederLevelStyle(levelEl, level);
+            return;
+        }
+
+        if (!levelEl) return;
+        levelEl.classList.add('level-badge');
+        levelEl.classList.remove(...levelClassNames);
+        levelEl.classList.add(getLevelClass(level));
+    };
+
+    const showPointsPop = (amount) => {
+        const pointsEl = document.getElementById('nav-points');
+        if (!pointsEl || !pointsEl.parentElement) return;
+
+        pointsEl.parentElement.style.position = 'relative';
+
+        const pop = document.createElement('span');
+        pop.className = 'points-pop';
+        pop.textContent = `+${amount}`;
+        pointsEl.parentElement.appendChild(pop);
+
+        setTimeout(() => pop.remove(), 1200);
+    };
+
+    const showGameToast = (title, message, className = '') => {
+        const toast = document.createElement('div');
+        toast.className = `game-toast ${className}`;
+        toast.innerHTML = `
+            <button class="game-toast-close" type="button" aria-label="Close">×</button>
+            <div class="game-toast-title">${title}</div>
+            <div class="game-toast-message">${message}</div>
+        `;
+
+        document.body.appendChild(toast);
+
+        toast.querySelector('.game-toast-close').addEventListener('click', () => toast.remove());
+        setTimeout(() => toast.classList.add('show'), 20);
+        setTimeout(() => toast.remove(), 4500);
+    };
+
+    const showLevelUpMessage = (newLevel) => {
+        showGameToast(
+            'Level Up!',
+            `You advanced to ${newLevel} 🏆`,
+            'level-up-toast'
+        );
+    };
+
+    // שליפת המרתף של המשתמש מהשרת וציור הכרטיסים במסך.
     const loadCellarFromServer = async () => {
         try {
             const response = await fetch(`/cellar/${encodeURIComponent(currentUser)}`);
@@ -49,6 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // בניית אפשרויות הסינון לפי היינות שקיימים בפועל במרתף.
     const populateFilters = (cellarWines) => {
         const yearList = document.getElementById('yearDropdown');
         const wineryList = document.getElementById('wineryDropdown');
@@ -90,6 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    // ציור כרטיסי היין אחרי חיפוש וסינון.
     const renderCellar = () => {
         let filteredWines = myCellar.filter(wine => {
             const matchesSearch = wine.name.toLowerCase().includes(currentState.searchText.toLowerCase());
@@ -135,6 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         attachRemoveListeners();
     };
 
+    // מחיקת יין רגיל או יין אישי לפי המקור שלו.
     const removeWine = async (wineId, source) => {
         try {
             let url = '/cellar';
@@ -174,6 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    // חיבור שדה החיפוש וכפתורי הסינון לפעולות המשתמש.
     const attachFiltersEvents = () => {
         document.getElementById('searchInput').addEventListener('input', (e) => {
             currentState.searchText = e.target.value;
@@ -190,6 +270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    // פתיחה וסגירה של חלון הוספת יין אישי.
     window.showAddWineModal = () => {
         document.getElementById('addWineForm').reset();
         document.getElementById('addWineModal').style.display = 'flex';
@@ -199,6 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('addWineModal').style.display = 'none';
     };
 
+    // שמירת יין אישי חדש, כולל בדיקות תקינות ועדכון ניקוד.
     window.saveNewWine = async (event) => {
         event.preventDefault();
 
@@ -237,24 +319,42 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // === עדכון ממשק המשחוק בזמן אמת (בונוס 50 נקודות) ===
-            let currentPoints = parseInt(localStorage.getItem('points') || 0);
-            currentPoints += 50;
-            localStorage.setItem('points', currentPoints);
+            // עדכון הניקוד והדרגה מיד אחרי שהשרת אישר שהיין נוסף
+            const oldLevel = localStorage.getItem('level') || 'Casual Sipper';
 
-            // בדיקת עליית דרגה
-            let newLevel = 'Casual Sipper';
-            if (currentPoints >= 8000) newLevel = 'Master of Wine';
-            else if (currentPoints >= 3500) newLevel = 'Vintage Expert';
-            else if (currentPoints >= 1200) newLevel = 'Wine Lover';
-            else if (currentPoints >= 400) newLevel = 'Curious Taster';
-            localStorage.setItem('level', newLevel);
+            let updatedPoints;
+            let updatedLevel;
+            let levelUp = false;
 
-            // עדכון התצוגה בתפריט
+            if (data.stats) {
+                updatedPoints = data.stats.points;
+                updatedLevel = data.stats.level;
+                levelUp = Boolean(data.stats.levelUp);
+            } else {
+                // גיבוי למקרה שהשרת עדיין לא מחזיר נתוני ניקוד
+                updatedPoints = parseInt(localStorage.getItem('points') || 0) + 50;
+                updatedLevel = calculateLevel(updatedPoints);
+                levelUp = oldLevel !== updatedLevel;
+            }
+
+            localStorage.setItem('points', updatedPoints);
+            localStorage.setItem('level', updatedLevel);
+
             const navPointsEl = document.getElementById('nav-points');
             const navLevelEl = document.getElementById('nav-level');
-            if (navPointsEl) navPointsEl.textContent = currentPoints;
-            if (navLevelEl) navLevelEl.textContent = newLevel;
+
+            if (navPointsEl) navPointsEl.textContent = updatedPoints;
+            if (window.updateWinederLevelProgress) window.updateWinederLevelProgress(updatedPoints);
+            if (navLevelEl) {
+                navLevelEl.textContent = updatedLevel;
+                applyLevelStyle(navLevelEl, updatedLevel);
+            }
+
+            showPointsPop(data.stats?.pointsDelta || 50);
+
+            if (levelUp) {
+                showLevelUpMessage(updatedLevel);
+            }
 
             closeAddWineModal();
             await loadCellarFromServer();

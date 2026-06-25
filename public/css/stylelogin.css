@@ -192,10 +192,17 @@ input[type="text"]:focus {
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 15px;
+    position: relative;
 }
 
+/* מסתיר את תיבת הסימון בלי לבטל את הודעת האימות של הדפדפן */
 .bubble-group input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
 }
 
 .bubble-label {

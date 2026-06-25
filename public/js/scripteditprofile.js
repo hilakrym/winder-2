@@ -1,3 +1,4 @@
+// קובץ זה מטפל בעריכת פרטי המשתמש והעדפות היין שלו.
 document.addEventListener('DOMContentLoaded', async () => {
     const currentUser = localStorage.getItem('currentUser');
 
@@ -18,9 +19,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const prefCheckboxes = document.querySelectorAll('.wine-pref');
 
 
+    // נשמר כדי לדעת אם המשתמש באמת שינה משהו בטופס.
     let initialState = {};
 
 
+    // שליפת פרטי המשתמש מהשרת ומילוי הטופס בערכים הקיימים.
     const loadProfileFromServer = async () => {
         try {
             const response = await fetch(`/profile/${encodeURIComponent(currentUser)}`);
@@ -60,6 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
 
+    // איסוף מצב הטופס הנוכחי לצורך שמירה או בדיקת שינויים.
     function getFormState() {
         const prefs = [];
 
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    // מציג את כפתור השמירה רק כאשר יש שינוי אמיתי בפרטים.
     function checkChanges() {
         const currentState = getFormState();
         const hasChanged = JSON.stringify(currentState) !== JSON.stringify(initialState);
@@ -99,6 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         editForm.addEventListener('change', checkChanges);
 
 
+        // שמירת הפרופיל לאחר בדיקות תקינות בסיסיות.
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -184,6 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    // ניקוי סימון שגיאה כאשר המשתמש מתחיל לתקן את השדה.
     const inputs = [firstNameInput, lastNameInput, emailInput, passwordInput];
 
 

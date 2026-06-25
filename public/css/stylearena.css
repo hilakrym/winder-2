@@ -145,7 +145,7 @@ body {
 .btn-dislike { color: #ff4b4b; }
 .btn-like { color: #4cd964; }
 
-/* אנימציות ה SWIPE  */
+/* אנימציות ההחלקה של כרטיס היין */
 .swipe-right {
     transform: translateX(100px) rotate(10deg) !important;
     opacity: 0;
@@ -158,7 +158,7 @@ body {
 
 /* מסך סיום */
 .empty-state {
-    display: none; /* מוסתר עד שה-JS יפעיל אותו */
+    display: none; /* מוסתר עד שהקוד מציג אותו */
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -186,9 +186,9 @@ body {
     margin-bottom: 25px;
 }
 
-/* כפתור Go to My Cellar  */
+/* כפתור מעבר למרתף האישי */
 .btn-cellar {
-    background-color: #B76E79; /* צבע ה-Rose Gold של המותג */
+    background-color: #B76E79; /* צבע המותג הראשי */
     color: white;
     border: none;
     padding: 12px 30px;
@@ -201,5 +201,5 @@ body {
 }
 
 .btn-cellar:hover {
-    background-color: #630d16; /* צבע יין כהה במעבר עכבר */
+    background-color: #630d16; /* צבע כהה יותר במעבר עכבר */
 }

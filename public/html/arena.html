@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +13,7 @@
     <link rel="stylesheet" href="../css/stylearena.css">
 </head>
 <body>
+    <!-- תפריט עליון משותף לכל העמודים -->
     <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="/">
@@ -29,7 +28,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
-                        <li class="nav-item"><a class="nav-link" href="/">home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link active" href="#" onclick="checkAccess(event, '/arena')">The Arena</a></li>
                         <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, '/cellar')">My Cellar</a></li>
                     </ul>
@@ -59,6 +58,7 @@
             </div>
 
 
+            <!-- פס ההתקדמות היומי נעלם לאחר השלמת חמש החלקות -->
             <div class="daily-progress-container mb-4 px-3 mx-auto" style="width: 100%; max-width: 450px;">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="fw-bold fs-5" style="color: #B76E79;">Daily Goal</span>
@@ -70,6 +70,7 @@
             </div>
 
 
+            <!-- אזור כרטיס היין שמתחלף בכל החלקה -->
             <div class="card-area" id="card-area">
                 <div class="wine-card" id="wine-card">
                     <img src="" alt="Wine Image" id="wine-img" class="wine-img">

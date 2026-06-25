@@ -19,6 +19,7 @@
 </head>
 <body>
 
+ <!-- תפריט עליון עם אזור משתמש דינמי -->
  <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -32,7 +33,7 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="/">home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, '/arena')">The Arena</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, '/cellar')">My Cellar</a></li>
                 </ul>
@@ -41,6 +42,7 @@
     </div>
 </nav>
    
+   <!-- אזור הפתיחה של עמוד הבית -->
    <header class="hero-section d-flex align-items-center">
         <div class="container text-center text-lg-start">
             <div class="row align-items-center">
@@ -58,6 +60,7 @@
         </div>
     </header>
 
+    <!-- תקציר פרופיל הטעם מוצג רק אחרי התחברות -->
     <section id="taste-profile-section" class="taste-profile-section d-none">
         <div class="container text-center">
             <h2 class="taste-profile-title mb-4">Your Taste Profile</h2>

@@ -1,20 +1,17 @@
-// Simple MySQL connection helper for the application.
-// Uses the `mysql2` driver to create and export a single connection
-// instance that other modules can require and use.
+// קובץ החיבור למסד הנתונים.
+// כל קובץ שרוצה לבצע שאילתות משתמש בחיבור שמוגדר כאן.
 
 const mysql = require("mysql2");
 
-// Create a connection to the local MySQL server. Update these
-// credentials or move them to environment variables for production.
+// פרטי ההתחברות למסד הנתונים המקומי.
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "News777Swim!",
+  password: "Hila1204!",
   database: "wineder_db"
 });
 
-// Open the connection and log success or failure. The callback
-// reports connection errors which can be useful during development.
+// פתיחת החיבור והצגת הודעה במסוף אם יש בעיה.
 connection.connect((err) => {
   if (err) {
     console.log("Error connecting to MySQL:", err);
@@ -24,7 +21,6 @@ connection.connect((err) => {
   console.log("Connected to MySQL database");
 });
 
-// Export the connection so other modules can run queries like:
-// `const db = require('../server/db'); db.query(...)`
+// ייצוא החיבור כדי ששאר קבצי השרת יוכלו להריץ שאילתות.
 module.exports = connection;
 
