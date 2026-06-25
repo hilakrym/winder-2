@@ -107,13 +107,6 @@ body {
     text-transform: uppercase;
 }
 
-#wine-desc {
-    font-size: 1rem;
-    line-height: 1.4;
-    color: #666;
-    max-height: 100px; /* הגבלה כדי למנוע גלילה */
-    overflow: hidden;
-}
 
 /* כפתורי הפעולה */
 .action-buttons {

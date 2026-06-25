@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // מצב הסינון הנוכחי של המרתף.
     let currentState = {
         searchText: '',
-        activeType: 'all',
+        activeTypes: ['red', 'white', 'rose'], // מאפשר בחירה של כמה סוגי יין במקביל
         filterYear: 'all',
         filterWinery: 'all'
     };
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let filteredWines = myCellar.filter(wine => {
             const matchesSearch = wine.name.toLowerCase().includes(currentState.searchText.toLowerCase());
             const normalizedWineType = (wine.type || '').toLowerCase().replace('é', 'e');
-            const matchesType = currentState.activeType === 'all' || normalizedWineType === currentState.activeType;
+            const matchesType = currentState.activeTypes.includes(normalizedWineType);
             const matchesYear = currentState.filterYear === 'all' || String(wine.year) === currentState.filterYear;
             const matchesWinery = currentState.filterWinery === 'all' || wine.winery === currentState.filterWinery;
 
@@ -262,9 +262,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.querySelectorAll('.chip[data-type]').forEach(chip => {
             chip.addEventListener('click', (e) => {
-                document.querySelector('.chip.active').classList.remove('active');
-                e.target.classList.add('active');
-                currentState.activeType = e.target.getAttribute('data-type');
+                const selectedType = e.target.getAttribute('data-type');
+
+                // אם הסוג כבר פעיל - נכבה אותו, אבל לא ניתן לכבות את כל הסוגים יחד
+                if (currentState.activeTypes.includes(selectedType)) {
+                    if (currentState.activeTypes.length === 1) {
+                        return;
+                    }
+
+                    currentState.activeTypes = currentState.activeTypes.filter(type => type !== selectedType);
+                    e.target.classList.remove('active');
+                } else {
+                    // אם הסוג לא פעיל - נוסיף אותו לסינון
+                    currentState.activeTypes.push(selectedType);
+                    e.target.classList.add('active');
+                }
+
                 renderCellar();
             });
         });

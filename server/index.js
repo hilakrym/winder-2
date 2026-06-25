@@ -287,12 +287,47 @@ app.get("/profile/:email", (req, res) => {
 // שמירת השינויים שהמשתמש ביצע בפרופיל ובהעדפות היין.
 app.put("/profile", (req, res) => {
   const { currentEmail, firstName, lastName, password, winePreferences } = req.body;
+
+  if (!currentEmail || !firstName || !password) {
+    return res.status(400).json({ message: "Missing required profile details." });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters." });
+  }
+
   const prefs = Array.isArray(winePreferences) ? winePreferences.join(",") : "";
-  db.query(`UPDATE users SET firstName = ?, lastName = ?, password = ?, wine_preferences = ? WHERE email = ?`, 
-    [firstName, lastName || "", password, prefs, currentEmail], (err) => {
-      if (err) return res.status(500).json({ message: "Error updating profile." });
-      res.json({ message: "Profile updated" });
-  });
+
+  const sql = `
+    UPDATE users
+    SET firstName = ?, lastName = ?, password = ?, wine_preferences = ?
+    WHERE email = ?
+  `;
+
+  db.query(
+    sql,
+    [firstName, lastName || "", password, prefs, currentEmail],
+    (err, result) => {
+      if (err) {
+        console.log("Profile update error:", err);
+        return res.status(500).json({ message: "Error updating profile." });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      res.json({
+        message: "Profile updated successfully.",
+        user: {
+          firstName,
+          lastName: lastName || "",
+          email: currentEmail,
+          winePreferences: prefs
+        }
+      });
+    }
+  );
 });
 
 app.use((req, res) => res.status(404).send("Page not found"));

@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const imgEl = document.getElementById('wine-img');
     const nameEl = document.getElementById('wine-name');
     const wineryYearEl = document.getElementById('wine-winery-year');
-    const descEl = document.getElementById('wine-desc');
-    const tagsEl = document.getElementById('wine-tags');
 
     const btnLike = document.getElementById('btn-like');
     const btnDislike = document.getElementById('btn-dislike');
@@ -245,8 +243,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         imgEl.onerror = function () { this.onerror = null; this.src = '../images/wine_images/default-wine.png'; };
         nameEl.textContent = wine.name;
         wineryYearEl.textContent = `${wine.winery} | ${wine.year || ''}`;
-        descEl.textContent = wine.desc || "A selected wine from the Wineder collection.";
-        tagsEl.innerHTML = `<span class="tag">${wine.type || 'Wine'}</span>`;
     };
 
     const saveToCellar = async (wine) => {
