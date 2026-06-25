@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wineder - Swipe Arena</title>
-   
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ספריות עיצוב חיצוניות -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-   
+    <!-- קבצי העיצוב של האתר -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/stylearena.css">
 </head>
 <body>
-    <!-- תפריט עליון משותף לכל העמודים -->
+    <!-- תפריט עליון: לוגו, קישורים מרכזיים, ואזור משתמש דינמי -->
     <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container">
+                <!-- לוגו ושם האתר -->
                 <a class="navbar-brand d-flex align-items-center" href="/">
                     <img src="../images/logo.png" alt="Wineder Logo" width="50" height="50" class="me-2">
                     <span class="brand-name" style="font-family: 'Playfair Display', serif; font-weight: 700; color: #B76E79; letter-spacing: 2px;">WINEDER</span>
@@ -25,20 +26,20 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-
+                <!-- לוגו ושם האתר -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                         <li class="nav-item"><a class="nav-link active" href="#" onclick="checkAccess(event, '/arena')">The Arena</a></li>
                         <li class="nav-item"><a class="nav-link" href="#" onclick="checkAccess(event, '/cellar')">My Cellar</a></li>
                     </ul>
-                   
-                     <div id="userArea" class="d-flex align-items-center"></div>
+                    <!-- אזור המשתמש לאחר התחברות -->
+                    <div id="userArea" class="d-flex align-items-center"></div>
                 </div>
             </div>
         </nav>
 
-
+        <!-- מודל התחברות: מוצג כאשר המשתמש מנסה לגשת לעמוד שאינו זמין -->
         <div id="loginModal" class="modal-overlay" style="display: none;">
             <div class="custom-modal-content text-center">
                 <h3 style="color: #C68E58; font-family: 'Playfair Display', serif;">Login Required</h3>
@@ -50,13 +51,12 @@
             </div>
         </div>
 
-
+    <!-- האזור העיקרי של עמוד ההחלקות -->    
     <div class="arena-wrapper">
         <div class="arena-container">
             <div class="arena-header">
                 <p>Find your perfect match</p>
             </div>
-
 
             <!-- פס ההתקדמות היומי נעלם לאחר השלמת חמש החלקות -->
             <div class="daily-progress-container mb-4 px-3 mx-auto" style="width: 100%; max-width: 450px;">
@@ -69,7 +69,6 @@
                 </div>
             </div>
 
-
             <!-- אזור כרטיס היין שמתחלף בכל החלקה -->
             <div class="card-area" id="card-area">
                 <div class="wine-card" id="wine-card">
@@ -78,6 +77,7 @@
                         <h2 id="wine-name">Wine Name</h2>
                         <h3 id="wine-winery-year">Winery | Year</h3>
                     </div>
+                    <!-- אזור כפתורי ההחלקה: אהבתי או לא אהבתי -->
                     <div class="action-buttons">
                         <button class="btn-action btn-dislike" id="btn-dislike">❌</button>
                         <button class="btn-action btn-like" id="btn-like">❤️</button>
@@ -85,19 +85,20 @@
                 </div>
             </div>
 
+            <!-- אזור הודעת סיום ההחלקות היומיות -->
             <div class="empty-state" id="empty-state">
                 <h2>That's it for today!</h2>
                 <p>You've seen all our recommendations based on your taste.</p>
+                <!-- כפתורים להחלקה נוספת או מעבר למרתף -->
                 <div class="d-flex gap-3 justify-content-center mt-3">
                     <button class="btn btn-outline-secondary px-4 py-2 fw-bold" id="btn-retry-dislikes" style="display: none; border-radius: 25px;">Let's go again</button>
-                    
                     <button class="btn btn-rose text-white px-4 py-2 fw-bold" style="background-color: var(--primary-rose); border-radius: 25px;" onclick="window.location.href='/cellar'">Go to My Cellar</button>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <!-- סקריפטים -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/scriptlogin.js"></script>
     <script src="../js/scriptarena.js"></script>

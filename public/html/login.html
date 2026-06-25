@@ -11,11 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
      <!-- קבצי העיצוב של האתר -->
     <link rel="stylesheet" href="../css/style.css">
-     <link rel="stylesheet" href="../css/stylelogin.css"> 
+    <link rel="stylesheet" href="../css/stylelogin.css"> 
 </head>
 <body>
 
-    <!-- תפריט הניווט -->
+     <!-- תפריט עליון: לוגו, קישורים מרכזיים, ואזור משתמש דינמי -->
     <nav class="navbar navbar-expand-lg sticky-top w-100 position-absolute top-0">
         <div class="container">
              <!-- לוגו ושם האתר -->
@@ -71,7 +71,7 @@
             </form>
 
             <!-- טופס הרשמה לאתר -->
-            <form id="signup-form" class="form-section" action="/login" method="POST">
+            <form id="signup-form" class="form-section" action="/signup" method="POST">
                 <h2>Create Account</h2>
                 
                 <!-- פרטים אישיים בסיסיים -->
@@ -109,7 +109,7 @@
                 <!-- שאלות העדפות אישי לכל משתמש -->
                 <div class="form-step">
                     <h3>3. Taste Preferences</h3>
-                    <!-- בחירת צבעי יין מועדפים -->
+                    <!-- בחירת צבע יין מועדפים -->
                     <p class="question-title">Preferred Wine Color (Choose up to 2 or All):</p>
                     <div class="bubble-group">
                         <input type="checkbox" id="color-red" name="wine-color" value="red">
@@ -143,7 +143,7 @@
 
 
                 </div>
-
+                <!-- כפתור שליחת טופס -->
                 <button type="submit" class="btn-primary">Create Account</button>
             </form>
         </div>
@@ -166,7 +166,7 @@
             </div>
         </div>
     </div>
-
+    <!-- סקריפטים שמקושרים לעמוד זה -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/scriptlogin.js"></script>
 </body>
