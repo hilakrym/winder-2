@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS wines (
     winery VARCHAR(255) NOT NULL,
     type VARCHAR(50),
     year INT,
-    image VARCHAR(255)
+    image VARCHAR(255),
     sweetness VARCHAR(50)
 );
 

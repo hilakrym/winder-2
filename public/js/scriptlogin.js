@@ -390,12 +390,43 @@ document.addEventListener('DOMContentLoaded', () => {
             return hasSelection;
         };
 
-        // ניקוי הודעת השגיאה לאחר בחירת העדפה
-        ['wine-color', 'sweetness'].forEach(groupName => {
-            getPreferenceInputs(groupName).forEach(input => {
-                input.addEventListener('change', () => validatePreferenceGroup(groupName));
+        // ניהול בחירת העדפות:
+        // אם בוחרים All - כל שאר האפשרויות מתבטלות.
+        // אם בוחרים אפשרות רגילה - All מתבטל.
+        // בנוסף, מותר לבחור עד 2 אפשרויות רגילות בלבד.
+        const setupPreferenceSelectionRules = (groupName) => {
+            const inputs = getPreferenceInputs(groupName);
+            const allInput = inputs.find(input => input.value === 'all');
+            const regularInputs = inputs.filter(input => input.value !== 'all');
+
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+
+                    // אם המשתמש בחר All
+                    if (input === allInput && input.checked) {
+                        regularInputs.forEach(option => option.checked = false);
+                    }
+
+                    // אם המשתמש בחר אפשרות רגילה
+                    if (input !== allInput && input.checked) {
+                        if (allInput) allInput.checked = false;
+
+                        const selectedRegular = regularInputs.filter(option => option.checked);
+
+                        if (selectedRegular.length > 2) {
+                            input.checked = false;
+                            alert("You can choose up to 2 options, or choose All.");
+                        }
+                    }
+
+                    validatePreferenceGroup(groupName);
+                });
             });
-        });
+        };
+
+        // הפעלת חוקי הבחירה על שתי קבוצות ההעדפות
+        setupPreferenceSelectionRules('wine-color');
+        setupPreferenceSelectionRules('sweetness');
 
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
